@@ -19,11 +19,26 @@ P.S. Здесь есть несколько вариантов решения з
 
 const movieDB = {
     movies: [
-        "Логан",
-        "Лига справедливости",
-        "Ла-ла лэнд",
-        "Одержимость",
-        "Скотт Пилигрим против всех"
+        {
+            name: 'Логан',
+            id: null,
+        },
+        {
+            name: 'Лига справедливости',
+            id: null,
+        },
+        {
+            name: 'Ла-ла лэнд',
+            id: null,
+        },
+        {
+            name: 'Одержимость',
+            id: null
+        },
+        {
+            name: 'Скотт Пилигрим против всех',
+            id: null,
+        },
     ]
 };
 
@@ -40,30 +55,29 @@ for (let item of watchedMoviesListItems){
     item.style.display = 'list-item';
 }
 
-const createMovieListItem = (movieName) => {
+const createMovieListItem = (movie) => {
     let item = document.createElement('li');
     item.classList.add('promo__interactive-item');
     item.style.display = 'list-item';
-
-    if (movieName.length > 21) {
-        movieName = (movieName[21] === ' ') ? movieName.slice(0,22) + '...' : movieName.slice(0,22) + ' ...';
+    let movieNameShortened = movie.name;
+    if (movieNameShortened.length > 21) {
+        movieNameShortened = (movieNameShortened[21] === ' ') ? movieNameShortened.slice(0,22) + '...' : movieNameShortened.slice(0,22) + ' ...';
+    }
+    if (movie.id === null){
+        movie.id = Math.random().toString(10).slice(2,6);
     }
 
-    item.innerHTML = `${movieName}
-        <div class="delete"></div>`
+    item.innerHTML = `${movieNameShortened}<div id="${movie.id}" class="delete"></div>`
     return item;
 };
 
-const favoriteMovieCheckbox = document.getElementById('favoriteMovieCheckbox');
-favoriteMovieCheckbox.addEventListener("click", () => {
-    console.log('checkbox!');
-});
-
-
+const movieComparator = (movieA, movieB) => {
+    return movieA.name - movieB.name;
+};
 
 const renewMoviesList = () => {
     watchedMoviesList.innerHTML = "";
-    movieDB.movies.sort();
+    movieDB.movies.sort(movieComparator);
     movieDB.movies.forEach((movie) => {
         watchedMoviesList.append(createMovieListItem(movie));
     });
@@ -71,13 +85,14 @@ const renewMoviesList = () => {
 
 renewMoviesList();
 
+const favoriteMovieCheckbox = document.getElementById('favoriteMovieCheckbox');
+
 const submitMoviesToListButton = document.getElementById("confirmAddMovieToList");
 submitMoviesToListButton.setAttribute('type', 'button');
 
 submitMoviesToListButton.addEventListener("click", () => {
     let movie = document.getElementById("movieInput").value;
-    movieDB.movies.push(movie);
-    console.log(movieDB.movies);
+    movieDB.movies.push({name : movie, id: null});
 
     if (favoriteMovieCheckbox.checked){
         console.log('checkbox is checked');
@@ -87,13 +102,20 @@ submitMoviesToListButton.addEventListener("click", () => {
     favoriteMovieCheckbox.checked = false;
     document.getElementById("movieInput").value = '';
     renewMoviesList();
+    console.log(movieDB.movies);
 });
 
 let deleteMovieFromList = watchedMoviesList.getElementsByClassName('delete');
 for (let deleteMovieFromListElement of deleteMovieFromList) {
     deleteMovieFromListElement.addEventListener("click", () => {
+        movieDB.movies.forEach((movie, index) => {
+            if (movie.id === deleteMovieFromListElement.id) {
+                movieDB.movies.splice(index,1);
+            }
+        });
         let listItemToDelete = deleteMovieFromListElement.parentNode;
         listItemToDelete.parentNode.removeChild(listItemToDelete);
+        console.log(movieDB.movies);
     });
-
 }
+
