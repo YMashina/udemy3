@@ -43,9 +43,7 @@ const movieDB = {
 };
 
 const addEventListenerToDeleteDiv = (deleteDivId) => {
-    console.log('adding event listener to ' + deleteDivId);
     const deleteMovieDiv = document.getElementById(deleteDivId);
-    console.log(deleteMovieDiv);
     deleteMovieDiv.addEventListener("click", () => {
         movieDB.movies.forEach((movie, index) => {
             if (movie.id === deleteMovieDiv.id) {
@@ -54,7 +52,6 @@ const addEventListenerToDeleteDiv = (deleteDivId) => {
         });
         let listItemToDelete = deleteMovieDiv.parentNode;
         listItemToDelete.parentNode.removeChild(listItemToDelete);
-        console.log(movieDB.movies);
     });
 };
 
@@ -83,9 +80,6 @@ const createMovieListItem = (movie) => {
         movie.id = Math.random().toString(10).slice(2,6);
     }
     item.innerHTML = `${movieNameShortened}<div id="${movie.id}" class="delete"></div>`
-    console.log(item);
-
-
     return item;
 };
 
@@ -114,14 +108,13 @@ submitMoviesToListButton.addEventListener("click", () => {
     movieDB.movies.push({name : movie, id: null});
 
     if (favoriteMovieCheckbox.checked){
-        console.log('checkbox is checked');
+        console.log('checkbox was checked');
     } else {
-        console.log('checkbox is not checked');
+        console.log('checkbox was not checked');
     }
     favoriteMovieCheckbox.checked = false;
     document.getElementById("movieInput").value = '';
     renewMoviesList();
-    console.log(movieDB.movies);
 });
 
 
