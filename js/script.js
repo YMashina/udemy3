@@ -42,6 +42,22 @@ const movieDB = {
     ]
 };
 
+const addEventListenerToDeleteDiv = (deleteDivId) => {
+    console.log('adding event listener to ' + deleteDivId);
+    const deleteMovieDiv = document.getElementById(deleteDivId);
+    console.log(deleteMovieDiv);
+    deleteMovieDiv.addEventListener("click", () => {
+        movieDB.movies.forEach((movie, index) => {
+            if (movie.id === deleteMovieDiv.id) {
+                movieDB.movies.splice(index,1);
+            }
+        });
+        let listItemToDelete = deleteMovieDiv.parentNode;
+        listItemToDelete.parentNode.removeChild(listItemToDelete);
+        console.log(movieDB.movies);
+    });
+};
+
 let advertisementsToDelete = document.getElementsByClassName('promo__adv')[0];
 advertisementsToDelete.parentNode.removeChild(advertisementsToDelete);
 
@@ -66,8 +82,10 @@ const createMovieListItem = (movie) => {
     if (movie.id === null){
         movie.id = Math.random().toString(10).slice(2,6);
     }
-
     item.innerHTML = `${movieNameShortened}<div id="${movie.id}" class="delete"></div>`
+    console.log(item);
+
+
     return item;
 };
 
@@ -80,6 +98,7 @@ const renewMoviesList = () => {
     movieDB.movies.sort(movieComparator);
     movieDB.movies.forEach((movie) => {
         watchedMoviesList.append(createMovieListItem(movie));
+        addEventListenerToDeleteDiv(movie.id);
     });
 };
 
@@ -105,17 +124,4 @@ submitMoviesToListButton.addEventListener("click", () => {
     console.log(movieDB.movies);
 });
 
-let deleteMovieFromList = watchedMoviesList.getElementsByClassName('delete');
-for (let deleteMovieFromListElement of deleteMovieFromList) {
-    deleteMovieFromListElement.addEventListener("click", () => {
-        movieDB.movies.forEach((movie, index) => {
-            if (movie.id === deleteMovieFromListElement.id) {
-                movieDB.movies.splice(index,1);
-            }
-        });
-        let listItemToDelete = deleteMovieFromListElement.parentNode;
-        listItemToDelete.parentNode.removeChild(listItemToDelete);
-        console.log(movieDB.movies);
-    });
-}
 
